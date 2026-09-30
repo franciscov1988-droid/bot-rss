@@ -34,8 +34,14 @@ CHANNEL_ID = os.environ.get("CHANNEL_ID", "@tu_canal")
 
 # Feeds que quieres reenviar. Puedes poner uno o varios.
 FEEDS = [
-    "https://ejemplo-cristiano.com/feed",
-    # "https://otra-pagina.com/rss",
+    "https://volvamosalevangelio.org/feed/",
+    "https://rinconreformado.com/feed/",
+    "https://biteproject.com/feed/",
+    "https://9marcas.org/feed/",
+    "https://semperreformandaperu.org/feed/",
+    "https://evangelio.blog/feed/",
+    "https://www.evangelioverdadero.com/feed/"
+    "https://josuebarrios.com/feed/"
 ]
 
 # Cada cuántos minutos revisar (solo aplica en modo bucle)
