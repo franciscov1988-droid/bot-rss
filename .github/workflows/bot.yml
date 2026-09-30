@@ -1,0 +1,50 @@
+name: Bot RSS a Telegram
+
+# ¿Cuándo se ejecuta?
+on:
+  schedule:
+    - cron: "*/15 * * * *"   # cada 15 minutos (hora UTC)
+  workflow_dispatch:          # también un botón para correrlo a mano
+
+# Permiso para que el bot pueda guardar su memoria en el repositorio
+permissions:
+  contents: write
+
+# Evita que dos corridas se pisen entre sí
+concurrency:
+  group: bot-rss-telegram
+  cancel-in-progress: false
+
+jobs:
+  enviar:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Descargar el repositorio
+        uses: actions/checkout@v4
+
+      - name: Preparar Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Instalar dependencias
+        run: pip install -r requirements.txt
+
+      - name: Revisar el feed y enviar lo nuevo
+        env:
+          BOT_TOKEN: ${{ secrets.BOT_TOKEN }}
+          CHANNEL_ID: ${{ secrets.CHANNEL_ID }}
+          ARCHIVO_ESTADO: bot_rss_enviados.json
+        run: python bot_rss_telegram.py --una-vez
+
+      - name: Guardar la memoria (lo ya enviado)
+        run: |
+          git config user.name "bot-rss"
+          git config user.email "bot-rss@users.noreply.github.com"
+          git add bot_rss_enviados.json
+          if git diff --cached --quiet; then
+            echo "No hubo cambios que guardar."
+          else
+            git commit -m "Actualizar memoria del bot"
+            git push
+          fi
